@@ -37,20 +37,23 @@ import static com.example.app_schedule.MainActivity.appDataBase;
 import static com.example.app_schedule.Tool.getNow;
 
 public class PieChartFragment extends Fragment {
+    private int lastDayBefore;
+
     @BindView(R.id.mp_pieChart)
     PieChart pieChart;
-
-    private Context mContext;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_piechart, container, false);
-        mContext = container.getContext();
         bindViews(view);
         setPieChart();
         setData();
         return view;
+    }
+
+    public void setLastDayBefore(int lastDayBefore) {
+        this.lastDayBefore = lastDayBefore;
     }
 
     private void bindViews(View view) {
@@ -81,9 +84,17 @@ public class PieChartFragment extends Fragment {
 
     private void setData() {
         ArrayList<PieEntry> entries = new ArrayList<>();
-        for(PlanInfo p : appDataBase.dayInfoDao().getTodoOrDoneList(getNow(),"done")) {
-            entries.add(new PieEntry((getAllTimeToDone(p.getStart(),p.getEndAngle())), p.getPlanName()));
+        switch (lastDayBefore) {
+            case 1 :
+                for(PlanInfo p : appDataBase.dayInfoDao().getTodoOrDoneList(getNow(),"done")) {
+                    entries.add(new PieEntry((getAllTimeToDone(p.getStart(),p.getEndAngle())), p.getPlanName()));
+                }
+                break;
+            case 7:
+
+
         }
+
 
         PieDataSet dataSet = new PieDataSet(entries,"일정 퍼센트");
 
